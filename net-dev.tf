@@ -183,3 +183,19 @@ module "dev-transit-vpc" {
 #   router_network = module.dev-spoke-vpc.name
 #   logging_filter = "ERRORS_ONLY"
 # }
+
+
+resource "google_network_connectivity_spoke" "transti-dev-spoke"  {
+  name = "ncc-transit-dev-spoke"
+  location = "global"
+  description = "NCC Spoke - Transit DEV - Managed by Terraform"
+  labels = {
+    scope = "ncc-dev"
+    environment = "dev"
+  }
+  hub = google_network_connectivity_hub.dev-hub.id
+  linked_vpc_network {
+    uri = module.dev-transit-vpc.self_link
+  }
+  group = google_network_connectivity_group.dev-core-center.id
+}
