@@ -78,11 +78,17 @@ jobs:
           service_account: ${{env.service_account}}
           access_token_lifetime: 900s
 
-      - id: gcp-sdk
-        name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+      - name: "Get Application Token"
+        id: get_app_token
+        uses: tibdex/github-app-token@v1
         with:
-          install_components: alpha
+          app_id: ${{ secrets.FAST_APP_ID }}
+          private_key: ${{ secrets.FAST_PRIV_KEY_FULL }}
+
+      - name: Extend Git credentials
+        uses: de-vri-es/setup-git-credentials@v2.0.10
+        with:
+          credentials: https://user:${{ steps.get_app_token.outputs.token }}@github.com
 
       # copy provider file
 
@@ -108,25 +114,21 @@ jobs:
 
       - id: tf-init
         name: Terraform init
-        continue-on-error: true
         run: |
           terraform init -no-color
 
       - id: tf-validate
-        continue-on-error: true
         name: Terraform validate
         run: terraform validate -no-color
 
       - id: tf-plan
         name: Terraform plan
-        continue-on-error: true
         run: |
           terraform plan -input=false -out ../plan.out -no-color ${{env.plan_opts}}
 
       - id: tf-apply
         if: github.event.pull_request.merged == true && success()
         name: Terraform apply
-        continue-on-error: true
         run: |
           terraform apply -input=false -auto-approve -no-color ../plan.out
 
