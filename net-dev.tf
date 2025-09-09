@@ -122,6 +122,7 @@ module "dev-transit-vpc" {
     context        = { regions = var.regions }
     subnets_folder = "${var.factories_config.subnets}/dev"
   }
+  delete_default_routes_on_create = true
   # firewall_policy_enforcement_order = local.dev_cfg.fw_order
   # psa_configs                       = var.psa_ranges.dev
   # # set explicit routes for googleapis in case the default route is deleted
