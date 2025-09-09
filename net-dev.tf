@@ -39,7 +39,7 @@ resource "google_network_connectivity_hub" "dev-hub" {
   #count       = local.spoke_connection == "ncc" ? 1 : 0
   name        = "ncc-dev-hub"
   description = "NCC DEV Hub - Managed by Terraform" 
-  project     = module.project.project_id
+  project     = module.dev-core-project.project_id
   #export_psc  = var.spoke_configs.ncc_configs.export_psc
   preset_topology = "STAR"
 }
