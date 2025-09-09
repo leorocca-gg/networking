@@ -47,12 +47,14 @@ resource "google_network_connectivity_hub" "dev-hub" {
 resource "google_network_connectivity_group" "dev-core-center"  {
  hub         = google_network_connectivity_hub.dev-hub.id
  name        = "center"
+ project     = module.dev-core-project.project_id
  description = "NCC DEV center group - Managed by Terraform"
 }
 
 resource "google_network_connectivity_group" "dev-core-edge"  {
  hub         = google_network_connectivity_hub.dev-hub.id
  name        = "edge"
+ project     = module.dev-core-project.project_id
  description = "NCC DEV edge group - Managed by Terraform"
 }
 
@@ -193,6 +195,7 @@ resource "google_network_connectivity_spoke" "transti-dev-spoke"  {
     scope = "ncc-dev"
     environment = "dev"
   }
+  project     = module.dev-core-project.project_id
   hub = google_network_connectivity_hub.dev-hub.id
   linked_vpc_network {
     uri = module.dev-transit-vpc.self_link
