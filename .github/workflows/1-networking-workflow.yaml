@@ -16,7 +16,7 @@ name: "FAST networking stage"
 
 on:
   pull_request:
-    branches-ignore:
+    branches:
       - main
     types:
       - closed
@@ -24,11 +24,12 @@ on:
       - synchronize
 
 env:
-  FAST_SERVICE_ACCOUNT: chspoc-prod-networking-1@chspoc-prod-iac-core-0.iam.gserviceaccount.com
-  FAST_SERVICE_ACCOUNT_PLAN: chspoc-prod-networking-1r@chspoc-prod-iac-core-0.iam.gserviceaccount.com
-  FAST_WIF_PROVIDER: projects/160361250112/locations/global/workloadIdentityPools/chspoc-btstp/providers/chspoc-btstp-networking
-  TF_PROVIDERS_FILE: 1-networking-providers.tf
-  TF_PROVIDERS_FILE_PLAN: 1-networking-r-providers.tf
+  FAST_SERVICE_ACCOUNT: chspoc-prod-resman-net-1@chspoc-prod-iac-core-0.iam.gserviceaccount.com
+  FAST_SERVICE_ACCOUNT_PLAN: chspoc-prod-resman-net-1r@chspoc-prod-iac-core-0.iam.gserviceaccount.com
+  FAST_WIF_PROVIDER: projects/160361250112/locations/global/workloadIdentityPools/chspoc-btstp/providers/chspoc-btstp-network
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+  TF_PROVIDERS_FILE: 2-networking-providers.tf
+  TF_PROVIDERS_FILE_PLAN: 2-networking-r-providers.tf
   TF_VERSION: 1.11.4
 
 jobs:
@@ -38,26 +39,25 @@ jobs:
       github.event.action == 'closed' && 
       github.event.pull_request.merged == true ||
       github.event.action == 'opened' ||
-      github.event.action == 'synchronize'  
+      github.event.action == 'synchronize'
     permissions:
       contents: read
       id-token: write
       issues: write
       pull-requests: write
     runs-on: ubuntu-latest
-    environment: prod    
     steps:
       - id: checkout
         name: Checkout repository
         uses: actions/checkout@v4
 
-      # # set up SSH key authentication to the modules repository
+      # set up SSH key authentication to the modules repository
 
-      # - id: ssh-config
-      #   name: Configure SSH authentication
-      #   run: |
-      #     ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null
-      #     ssh-add - <<< "${{ secrets.CICD_MODULES_KEY }}"
+      - id: ssh-config
+        name: Configure SSH authentication
+        run: |
+          ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null
+          ssh-add - <<< "${{ secrets.CICD_MODULES_KEY }}"
 
       # set up step variables for plan / apply
 
@@ -82,28 +82,15 @@ jobs:
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          token_format: 'access_token'        
           workload_identity_provider: ${{env.FAST_WIF_PROVIDER}}
           service_account: ${{env.service_account}}
           access_token_lifetime: 900s
 
-      # - id: gcp-sdk
-      #   name: Set up Cloud SDK
-      #   uses: google-github-actions/setup-gcloud@v2
-      #   with:
-      #     install_components: alpha
-
-      - name: "Get Application Token"
-        id: get_app_token
-        uses: tibdex/github-app-token@v1
+      - id: gcp-sdk
+        name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          app_id: ${{ secrets.FAST_APP_ID }}
-          private_key: ${{ secrets.FAST_PRIV_KEY_FULL }}
-
-      - name: Extend Git credentials
-        uses: de-vri-es/setup-git-credentials@v2.0.10
-        with:
-          credentials: https://user:${{ steps.get_app_token.outputs.token }}@github.com
+          install_components: alpha
 
       # copy provider file
 
@@ -114,6 +101,8 @@ jobs:
             "gs://chspoc-prod-iac-core-outputs-0/providers/${{env.provider_file}}" ./
           gcloud storage cp -r \
             "gs://chspoc-prod-iac-core-outputs-0/tfvars/0-bootstrap.auto.tfvars.json" ./
+          gcloud storage cp -r \
+            "gs://chspoc-prod-iac-core-outputs-0/tfvars/1-resman.auto.tfvars.json" ./
           gcloud storage cp -r \
             "gs://chspoc-prod-iac-core-outputs-0/tfvars/0-globals.auto.tfvars.json" ./
 
