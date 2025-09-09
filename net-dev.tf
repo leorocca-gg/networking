@@ -65,7 +65,6 @@ module "dev-core-project" {
   billing_account = var.billing_account.id
   name            = "dev-core"
   parent = var.folder_ids.networking
-  )
   prefix = var.prefix
   services = [
     "compute.googleapis.com",
