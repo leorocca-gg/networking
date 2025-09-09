@@ -50,7 +50,7 @@ resource "google_network_connectivity_group" "dev-core-center"  {
  description = "NCC DEV center group - Managed by Terraform"
 }
 
-resource "google_network_connectivity_group" "dev-core-center"  {
+resource "google_network_connectivity_group" "dev-core-edge"  {
  hub         = google_network_connectivity_hub.dev-hub.id
  name        = "edge"
  description = "NCC DEV edge group - Managed by Terraform"
@@ -61,7 +61,7 @@ resource "google_network_connectivity_group" "dev-core-center"  {
 
 
 module "dev-core-project" {
-  source = "git@github.com:GCP-Infrastructure/modules//project?ref=main"
+  source = "git@github.com:leorocca-gg/modules//project?ref=main"
   billing_account = var.billing_account.id
   name            = "dev-core"
   parent = var.folder_ids.networking
@@ -110,7 +110,7 @@ module "dev-core-project" {
 }
 
 module "dev-transit-vpc" {
-  source = "git@github.com:GCP-Infrastructure/modules//net-vpc?ref=main"
+  source = "git@github.com:leorocca-gg/modules//net-vpc?ref=main"
   project_id                      = module.dev-core-project.project_id
   name                            = "dev-transit-vpc"
   #mtu                             = var.vpc_configs.dev.mtu
@@ -141,7 +141,7 @@ module "dev-transit-vpc" {
 }
 
 # module "dev-spoke-firewall" {
-#   source = "git@github.com:GCP-Infrastructure/modules//net-vpc-firewall?ref=main"
+#   source = "git@github.com:leorocca-gg/modules//net-vpc-firewall?ref=main"
 #   count      = local.dev_cfg.fw_classic ? 1 : 0
 #   project_id = module.dev-spoke-project.project_id
 #   network    = module.dev-spoke-vpc.name
@@ -155,7 +155,7 @@ module "dev-transit-vpc" {
 # }
 
 # module "dev-firewall-policy" {
-#   source = "git@github.com:GCP-Infrastructure/modules//net-firewall-policy?ref=main"
+#   source = "git@github.com:leorocca-gg/modules//net-firewall-policy?ref=main"
 #   count     = local.dev_cfg.fw_policy ? 1 : 0
 #   name      = "dev-spoke-0"
 #   parent_id = module.dev-spoke-project.project_id
@@ -172,7 +172,7 @@ module "dev-transit-vpc" {
 # }
 
 # module "dev-spoke-cloudnat" {
-#   source = "git@github.com:GCP-Infrastructure/modules//net-cloudnat?ref=main"
+#   source = "git@github.com:leorocca-gg/modules//net-cloudnat?ref=main"
 #   for_each = toset(
 #     local.dev_cfg.cloudnat ? values(module.dev-spoke-vpc.subnet_regions) : []
 #   )
