@@ -51,6 +51,19 @@ variable "billing_account" {
   nullable = false
 }
 
+
+variable "folder_ids" {
+  # tfdoc:variable:source 1-resman
+  description = "Folder ids from Bootstrap and resman"
+  type = object({
+    networking           = string
+    applications         = string
+    security             = string
+    shared               = string
+  })
+  nullable = false
+}
+
 variable "custom_roles" {
   # tfdoc:variable:source 0-bootstrap
   description = "Custom roles defined at the org level, in key => id format."
