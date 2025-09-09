@@ -68,8 +68,8 @@ variable "folder_ids" {
   description = "Folders to be used for the networking resources in folders/nnnnnnnnnnn format."
   type = object({
     networking      = string
-    networking-dev  = optional(string)
-    networking-prod = optional(string)
+    # networking-dev  = optional(string)
+    # networking-prod = optional(string)
   })
 }
 
