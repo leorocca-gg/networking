@@ -9,7 +9,6 @@ module "dev-host-prjs" {
   name            = each.value.id
   parent          = var.folder_ids.networking
   prefix          = var.prefix
-  shared_vpc_host = true
   shared_vpc_host_config = {
     enabled = true
   }
