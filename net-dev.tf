@@ -33,11 +33,17 @@
 # }
 
 
+
+locals {
+  ncc_dev_hub_name = "ncc-dev-hub"
+  ncc_dev_transit_spoke = "ncc-transit-dev-spoke"
+}
+
 ## NCC HUB ###
 
 resource "google_network_connectivity_hub" "dev-hub" {
   #count       = local.spoke_connection == "ncc" ? 1 : 0
-  name        = "ncc-dev-hub"
+  name        = local.ncc_dev_hub_name
   description = "NCC DEV Hub - Managed by Terraform" 
   project     = module.dev-core-project.project_id
   #export_psc  = var.spoke_configs.ncc_configs.export_psc
@@ -187,8 +193,8 @@ module "dev-transit-vpc" {
 # }
 
 
-resource "google_network_connectivity_spoke" "transti-dev-spoke"  {
-  name = "ncc-transit-dev-spoke"
+resource "google_network_connectivity_spoke" "transit-dev-spoke"  {
+  name = local.ncc_dev_transit_spoke
   location = "global"
   description = "NCC Spoke - Transit DEV - Managed by Terraform"
   labels = {
