@@ -7,7 +7,7 @@ module "dev-host-prjs" {
   for_each = local.host_prjs
   billing_account = var.billing_account.id
   name            = each.value.id
-  parent          = var.folder_ids.networking
+  parent          = var.folder_ids.dev # networking/dev folder
   prefix          = var.prefix
   shared_vpc_host_config = {
     enabled = true
