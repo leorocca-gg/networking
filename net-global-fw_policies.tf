@@ -8,7 +8,7 @@ module "net-firewall-policy" {
   source = "git@github.com:leorocca-gg/modules//net-firewall-policy?ref=main"
   name      = "net-policies"
   parent_id = var.folder_ids.security
-  region    = "global"
+  #region    = "global"
   attachments = {
     networkroot = var.folder_ids.networking 
   }
