@@ -14,8 +14,8 @@ module "net-firewall-policy" {
   }
   factories_config = {
     cidr_file_path          = var.factories_config.firewall.cidr_file
-    egress_rules_file_path  = "${var.factories_config.firewall.policy_rules}/data/hierarchical-egress-rules.yaml"
-    ingress_rules_file_path = "${var.factories_config.firewall.policy_rules}/data/hierarchical-ingress-rules.yaml"
+    egress_rules_file_path  = "${var.factories_config.firewall.hierarchical.egress_rules}"
+    ingress_rules_file_path = "${var.factories_config.firewall.hierarchical.ingress_rules}"
   }
   #security_profile_group_ids = var.security_profile_groups
 }
