@@ -6,7 +6,7 @@
 
 in-allow-iap-ssh:
   description: Allow ingress IAP SSH
-  priority: 1001
+  priority: 2001
   match:
     source_ranges:
       - 35.235.240.0/20
@@ -16,7 +16,7 @@ in-allow-iap-ssh:
 
 in-allow-rfc1918:
   description: Allow ingress IAP SSH
-  priority: 1001
+  priority: 3001
   match:
     source_ranges:
       - 10.0.0.0/8
