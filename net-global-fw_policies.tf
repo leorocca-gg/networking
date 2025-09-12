@@ -20,3 +20,7 @@ module "net-firewall-policy" {
   #security_profile_group_ids = var.security_profile_groups
 }
 
+  parent_id = "folders/1234567890"
+  attachments = {
+    test = "folders/4567890123"
+  }
