@@ -42,3 +42,7 @@ terraform.rc
 *.back
 *.log
 *.lock*
+*.no
+
+#terraform providers file
+*providers*

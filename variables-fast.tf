@@ -60,6 +60,9 @@ variable "folder_ids" {
     applications         = string
     security             = string
     shared               = string
+    dev                  = string # networking/dev
+    shr                  = string # networking/qa
+    prod                 = string # networking/prod       
   })
   nullable = false
 }

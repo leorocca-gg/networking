@@ -16,21 +16,21 @@
 
 # tfdoc:file:description Dev spoke VPC and related resources.
 
-# locals {
-#   # streamline VPC configuration conditionals for modules by moving them here
-#   dev_cfg = {
-#     cloudnat    = var.vpc_configs.dev.cloudnat.enable == true
-#     dns_logging = var.vpc_configs.dev.dns.enable_logging == true
-#     dns_policy  = var.vpc_configs.dev.dns.create_inbound_policy == true
-#     fw_classic  = var.vpc_configs.dev.firewall.use_classic == true
-#     fw_order = (
-#       var.vpc_configs.dev.firewall.policy_has_priority == true
-#       ? "BEFORE_CLASSIC_FIREWALL"
-#       : "AFTER_CLASSIC_FIREWALL"
-#     )
-#     fw_policy = var.vpc_configs.dev.firewall.create_policy == true
-#   }
-# }
+locals {
+  # streamline VPC configuration conditionals for modules by moving them here
+  dev_cfg = {
+    cloudnat    = var.vpc_configs.dev.cloudnat.enable == true
+    dns_logging = var.vpc_configs.dev.dns.enable_logging == true
+    dns_policy  = var.vpc_configs.dev.dns.create_inbound_policy == true
+    fw_classic  = var.vpc_configs.dev.firewall.use_classic == true
+    fw_order = (
+      var.vpc_configs.dev.firewall.policy_has_priority == true
+      ? "BEFORE_CLASSIC_FIREWALL"
+      : "AFTER_CLASSIC_FIREWALL"
+    )
+    fw_policy = var.vpc_configs.dev.firewall.create_policy == true
+  }
+}
 
 
 
@@ -72,7 +72,7 @@ module "dev-core-project" {
   source = "git@github.com:leorocca-gg/modules//project?ref=main"
   billing_account = var.billing_account.id
   name            = "dev-core"
-  parent = var.folder_ids.networking
+  parent = var.folder_ids.dev # networking/dev folder
   prefix = var.prefix
   services = [
     "compute.googleapis.com",
@@ -121,8 +121,7 @@ module "dev-transit-vpc" {
   project_id                      = module.dev-core-project.project_id
   name                            = "dev-transit-vpc"
   #mtu                             = var.vpc_configs.dev.mtu
-  #delete_default_routes_on_create = true
-  # dns_policy = !local.dev_cfg.dns_policy ? {} : {
+    # dns_policy = !local.dev_cfg.dns_policy ? {} : {
   #   inbound = true
   #   logging = local.dev_cfg.dns_logging
   # }
@@ -130,7 +129,9 @@ module "dev-transit-vpc" {
     context        = { regions = var.regions }
     subnets_folder = "${var.factories_config.subnets}/dev"
   }
-  delete_default_routes_on_create = true
+  delete_default_routes_on_create = false
+
+
   # firewall_policy_enforcement_order = local.dev_cfg.fw_order
   # psa_configs                       = var.psa_ranges.dev
   # # set explicit routes for googleapis in case the default route is deleted
@@ -166,11 +167,11 @@ module "dev-transit-vpc" {
 #   source = "git@github.com:leorocca-gg/modules//net-firewall-policy?ref=main"
 #   count     = local.dev_cfg.fw_policy ? 1 : 0
 #   name      = "dev-spoke-0"
-#   parent_id = module.dev-spoke-project.project_id
+#   parent_id = 
 #   region    = "global"
-#   attachments = {
-#     dev-spoke-0 = module.dev-spoke-vpc.id
-#   }
+#   # attachments = {
+#   #   dev-spoke-0 = module.dev-spoke-vpc.id 
+#   # }
 #   factories_config = {
 #     cidr_file_path          = var.factories_config.firewall.cidr_file
 #     egress_rules_file_path  = "${var.factories_config.firewall.policy_rules}/dev/egress.yaml"
