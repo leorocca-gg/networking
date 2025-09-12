@@ -15,7 +15,7 @@ in-allow-iap-ssh:
         ports: ["22"]
 
 in-allow-rfc1918:
-  description: Allow ingress IAP SSH
+  description: Allow ingress RFC1918
   priority: 3001
   match:
     source_ranges:
