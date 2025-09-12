@@ -24,7 +24,7 @@ in-allow-rfc1918:
       - 192.168.0.0/16
     layer4_configs:
       - protocol: tcp
-        ports: ["all"]
+        #ports: ["all"]
 
 
 
